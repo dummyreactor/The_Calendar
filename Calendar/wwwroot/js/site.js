@@ -444,4 +444,3 @@ function resizeAndRestackTasks() {
         });
     });
 }
-

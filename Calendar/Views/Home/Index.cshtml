@@ -1,66 +1,56 @@
-﻿@* @{
+﻿@{
     ViewBag.Title = "Schedule";
     var weekDates = ViewBag.WeekDates as List<DateTime>;
-    var hours = Enumerable.Range(0, 24).ToList(); // 24-hour format
+    var hours = Enumerable.Range(0, 24).ToList();
 }
 
 <div class="calendar-wrapper">
     <!-- Sidebar for Tasks -->
-    <aside class="task-panel">
+    <aside class="task-panel shadow-sm">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Tasks</h3>
-            <button id="add-task-btn" class="btn btn-sm btn-outline-success" title="Add Task">➕</button>
+            <h3 class="mb-0 text-primary fw-semibold">📋 Tasks</h3>
+            <button id="add-task-btn" class="btn btn-sm btn-outline-success rounded-circle" title="Add Task">➕</button>
         </div>
 
         <div class="task-list" id="task-list">
-            <div class="task-card" draggable="true">
+            <div class="task-card shadow-sm" draggable="true">
                 <strong>Title</strong><br />
                 <small>Task description</small>
             </div>
-        </div>
-
-        <div id="task-input-wrapper" style="margin-top: 10px; display: none;">
-            <input type="text" id="new-task-title" class="form-control form-control-sm mb-2" placeholder="Task title..." />
-            <input type="number" id="new-task-duration" class="form-control form-control-sm mb-2" placeholder="Duration (hours)" min="1" max="8" />
-
-            <textarea id="new-task-desc" class="form-control form-control-sm mb-2" placeholder="Task description..." rows="2"></textarea>
-            <button id="save-task-btn" class="btn btn-sm btn-primary w-100">Add</button>
         </div>
     </aside>
 
     <!-- Main Calendar Section -->
     <main class="calendar-board">
         <!-- Top Navigation -->
-        <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-white border-bottom">
-            <div>
-                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline">
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-light border-bottom shadow-sm">
+            <div class="d-flex gap-2 align-items-center">
+                <form method="get" asp-controller="Home" asp-action="Index">
                     <input type="hidden" name="direction" value="prev" />
                     <button class="btn btn-outline-secondary btn-sm" type="submit">← Previous</button>
                 </form>
-                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline mx-2">
+                <form method="get" asp-controller="Home" asp-action="Index">
                     <input type="hidden" name="direction" value="today" />
                     <button class="btn btn-outline-primary btn-sm" type="submit">Today</button>
                 </form>
-                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline">
+                <form method="get" asp-controller="Home" asp-action="Index">
                     <input type="hidden" name="direction" value="next" />
                     <button class="btn btn-outline-secondary btn-sm" type="submit">Next →</button>
                 </form>
                 <button id="reset-layout-btn" class="btn btn-sm btn-outline-danger ms-2">Reset Layout</button>
-
             </div>
-            <div>
-                <strong>@ViewBag.WeekRange</strong>
-            </div>
+            <div class="text-end text-muted fw-bold">@ViewBag.WeekRange</div>
         </div>
 
         <!-- Calendar Header Row -->
-        <div class="calendar-header">
+        <div class="calendar-header border-bottom">
             <div class="time-label-cell">Time</div>
-            @for (int i = 0; i < weekDates.Count; i++)
+            @foreach (var date in weekDates)
             {
-                <div class="day-header">
-                    <div class="day-name">@weekDates[i].ToString("ddd")</div>
-                    <div class="day-date">@weekDates[i].ToString("dd MMM")</div>
+                var isToday = date.Date == DateTime.Today;
+                <div class="day-header @(isToday ? "today" : "")">
+                    <div class="day-name text-primary fw-semibold">@date.ToString("ddd")</div>
+                    <div class="day-date text-muted">@date.ToString("dd MMM")</div>
                     <div class="column-resizer"></div>
                 </div>
             }
@@ -71,122 +61,42 @@
             @foreach (var hour in hours)
             {
                 <div class="calendar-row">
-                    <div class="time-label-cell">
+                    <div class="time-label-cell text-muted">
                         @DateTime.Today.AddHours(hour).ToString("HH:mm")
                     </div>
-                    @for (int i = 0; i < weekDates.Count; i++)
+                    @foreach (var day in weekDates)
                     {
-                        <div class="calendar-slot" data-day="@weekDates[i].ToString("yyyy-MM-dd")" data-hour="@hour"></div>
+                        var isToday = day.Date == DateTime.Today;
+                        <div class="calendar-slot @(isToday ? "today" : "")" data-day="@day.ToString("yyyy-MM-dd")" data-hour="@hour"></div>
                     }
                 </div>
             }
         </div>
 
         <!-- TrashCan -->
-        <div id="trash-can">🗑️</div>
-    </main>
-</div>
- *@
-@{
-    ViewBag.Title = "Schedule";
-    var weekDates = ViewBag.WeekDates as List<DateTime>;
-    var hours = Enumerable.Range(0, 24).ToList(); // 24-hour format
-}
-
-<div class="calendar-wrapper">
-    <!-- Sidebar for Tasks -->
-    <aside class="task-panel">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Tasks</h3>
-            <button id="add-task-btn" class="btn btn-sm btn-outline-success" title="Add Task">➕</button>
-        </div>
-
-        <div class="task-list" id="task-list">
-            <div class="task-card" draggable="true">
-                <strong>Title</strong><br />
-                <small>Task description</small>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Main Calendar Section -->
-    <main class="calendar-board">
-        <!-- Top Navigation -->
-        <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-white border-bottom">
-            <div>
-                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline">
-                    <input type="hidden" name="direction" value="prev" />
-                    <button class="btn btn-outline-secondary btn-sm" type="submit">← Previous</button>
-                </form>
-                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline mx-2">
-                    <input type="hidden" name="direction" value="today" />
-                    <button class="btn btn-outline-primary btn-sm" type="submit">Today</button>
-                </form>
-                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline">
-                    <input type="hidden" name="direction" value="next" />
-                    <button class="btn btn-outline-secondary btn-sm" type="submit">Next →</button>
-                </form>
-                <button id="reset-layout-btn" class="btn btn-sm btn-outline-danger ms-2">Reset Layout</button>
-            </div>
-            <div>
-                <strong>@ViewBag.WeekRange</strong>
-            </div>
-        </div>
-
-        <!-- Calendar Header Row -->
-        <div class="calendar-header">
-            <div class="time-label-cell">Time</div>
-            @for (int i = 0; i < weekDates.Count; i++)
-            {
-                <div class="day-header">
-                    <div class="day-name">@weekDates[i].ToString("ddd")</div>
-                    <div class="day-date">@weekDates[i].ToString("dd MMM")</div>
-                    <div class="column-resizer"></div>
-                </div>
-            }
-        </div>
-
-        <!-- Calendar Grid Rows -->
-        <div class="calendar-grid">
-            @foreach (var hour in hours)
-            {
-                <div class="calendar-row">
-                    <div class="time-label-cell">
-                        @DateTime.Today.AddHours(hour).ToString("HH:mm")
-                    </div>
-                    @for (int i = 0; i < weekDates.Count; i++)
-                    {
-                        <div class="calendar-slot" data-day="@weekDates[i].ToString("yyyy-MM-dd")" data-hour="@hour"></div>
-                    }
-                </div>
-            }
-        </div>
-
-        <!-- TrashCan -->
-        <div id="trash-can">🗑️</div>
+        <div id="trash-can" title="Drop here to delete">🗑️</div>
     </main>
 </div>
 
 <!-- Task Input Modal -->
 <div class="modal fade" id="taskInputModal" tabindex="-1" aria-labelledby="taskInputModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content shadow-sm">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="taskInputModalLabel">Add Task</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-light">
                 <input type="text" id="new-task-title" class="form-control form-control-sm mb-2" placeholder="Task title..." />
                 <div class="d-flex gap-2 mb-2">
                     <input type="number" id="new-task-hour" class="form-control form-control-sm" placeholder="Hours" min="0" max="8" />
                     <input type="number" id="new-task-minute" class="form-control form-control-sm" placeholder="Minutes" min="0" max="59" />
                 </div>
-
                 <textarea id="new-task-desc" class="form-control form-control-sm mb-2" placeholder="Task description..." rows="2"></textarea>
             </div>
-            <div class="modal-footer">
-                <button id="save-task-btn" class="btn btn-sm btn-primary">Add</button>
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <div class="modal-footer bg-white">
+                <button id="save-task-btn" class="btn btn-primary btn-sm">Add</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

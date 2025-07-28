@@ -4,33 +4,34 @@ body {
     background-color: #f4f7fa;
 }
 
+/* === LAYOUT === */
 .calendar-wrapper {
     display: flex;
-    flex-direction: row;
     height: 100vh;
     overflow: hidden;
 }
 
+/* === SIDEBAR === */
 .task-panel {
-/*    width: 240px;*/
     width: 25vw;
-    background: white;
+    background: #ffffff;
     padding: 1rem;
     border-right: 1px solid #ddd;
     overflow-y: auto;
-    flex-shrink: 0;
 }
 
     .task-panel h3 {
         margin-bottom: 1rem;
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #333;
     }
 
 .task-list {
     display: flex;
-    min-height: 80vh;
-
     flex-direction: column;
     gap: 10px;
+    min-height: 80vh;
 }
 
 .task-card {
@@ -41,27 +42,30 @@ body {
     cursor: grab;
     font-size: 0.95rem;
     user-select: none;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
     .task-card:hover {
         background: #5c6bc0;
+        transform: scale(1.03);
     }
 
-update
-
+/* === MAIN CALENDAR === */
 .calendar-board {
     flex: 1;
     display: flex;
     flex-direction: column;
+    background: #fff;
     overflow: hidden;
-    background: white;
 }
 
+    /* Top Header Navigation */
     .calendar-board > .d-flex {
         flex-wrap: wrap;
     }
 
-/* Header row with day names */
+/* Calendar Header */
 .calendar-header {
     display: flex;
     width: max-content;
@@ -73,22 +77,24 @@ update
     width: 120px;
     min-width: 80px;
     max-width: 240px;
-    box-sizing: border-box;
     border-right: 1px solid #ccc;
     position: relative;
+    text-align: center;
+    padding: 6px 0;
 }
 
 .day-name {
-    text-align: center;
     font-size: 0.95rem;
+    font-weight: 600;
+    color: #1976d2;
 }
 
 .day-date {
-    text-align: center;
     font-size: 0.75rem;
     color: #666;
 }
 
+/* Time Column */
 .time-label-cell {
     width: 60px;
     text-align: right;
@@ -97,45 +103,45 @@ update
     background: #f9f9f9;
     color: #666;
     border-right: 1px solid #ddd;
-    flex-shrink: 0;
 }
+
+/* Grid Rows */
 .calendar-grid {
     overflow-y: auto;
     width: 100%;
     flex: 1;
-    height: calc(100vh - 180px); /* Approx space for top bar + header row */
+    height: calc(100vh - 180px);
 }
 
+/* Row */
 .calendar-row {
     display: flex;
     width: max-content;
     border-bottom: 1px solid #eee;
-    height: calc((100vh - 180px) / 6); /* Divide available height by 6 */
+    height: calc((100vh - 180px) / 6);
     position: relative;
 }
-/* Time slot cell */
+
+/* === SLOTS === */
 .calendar-slot {
     width: 120px;
     min-width: 80px;
     max-width: 240px;
-    box-sizing: border-box;
     border-left: 1px solid #eee;
-    background-color: #ffffff;
+    background-color: #fff;
     transition: background-color 0.2s;
     padding: 2px;
     flex: none;
     position: relative;
-    overflow: visible; /* important for stacking effect */
+    overflow: visible;
 }
 
     .calendar-slot:hover {
         background-color: #e8f0fe;
     }
 
-    /* Stacked task cards inside calendar slot */
+    /* === STACKED CARDS === */
     .calendar-slot .task-card {
-        background-color: #4caf50;
-        color: #fff;
         font-weight: 500;
         font-size: 0.75rem;
         padding: 4px 6px;
@@ -145,22 +151,22 @@ update
         top: 0;
         left: 0;
         transform: translateX(calc(var(--stack-index, 0) * 3px));
-        transition: transform 0.3s ease, z-index 0.3s ease;
+        transition: transform 0.25s ease, z-index 0.25s ease;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         border-radius: 4px;
         pointer-events: auto;
         cursor: pointer;
         z-index: calc(10 + var(--stack-index, 0));
+        background-color: var(--bg-color, #4caf50);
+        color: #fff;
     }
 
-    /* On hover: fan out stack */
     .calendar-slot:hover .task-card {
         transform: translateX(calc(var(--stack-index, 0) * 22px));
         z-index: calc(100 + var(--stack-index, 0));
     }
 
-
-/* Column Resizer */
+/* === RESIZERS === */
 .column-resizer {
     width: 6px;
     cursor: col-resize;
@@ -169,10 +175,9 @@ update
     right: 0;
     top: 0;
     z-index: 2;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Row Resizer (if needed) */
 .row-resizer {
     height: 5px;
     cursor: row-resize;
@@ -181,10 +186,10 @@ update
     bottom: 0;
     left: 0;
     z-index: 2;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Trash icon */
+/* === TRASH CAN === */
 #trash-can {
     position: fixed;
     bottom: 20px;
@@ -200,7 +205,6 @@ update
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     z-index: 9999;
     cursor: pointer;
-    user-select: none;
     transition: background-color 0.3s ease;
 }
 
@@ -208,7 +212,7 @@ update
         background-color: #cc0000;
     }
 
-/* Responsive Tweaks */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
     .task-panel {
         display: none;
@@ -221,8 +225,7 @@ update
 
     .calendar-slot {
         padding: 1px;
-        position: relative; /* Ensure positioning context */
-        overflow: visible; /* Allow overflow if needed */
+        overflow: visible;
     }
 
         .calendar-slot .task-card {
@@ -243,4 +246,15 @@ update
         font-size: 0.65rem;
         padding: 4px 5px;
     }
+}
+
+/* Highlight for today's column */
+.day-header.today {
+    background-color: #e3f2fd;
+    border-bottom: 2px solid #1976d2;
+}
+
+.calendar-slot.today {
+    background-color: #f0f8ff;
+    border-left: 3px solid #2196f3;
 }
