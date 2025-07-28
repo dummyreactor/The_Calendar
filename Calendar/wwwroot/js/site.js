@@ -372,6 +372,7 @@ document.querySelectorAll('.calendar-row').forEach(row => {
             row.querySelectorAll('.task-card').forEach(task => {
                 //const duration = parseInt(task.dataset.duration) || 1;
                 //task.style.height = `${newHeight * duration}px`;
+                resizeAndRestackTasks();
             });
         }
 
@@ -410,3 +411,37 @@ document.getElementById('reset-layout-btn')?.addEventListener('click', () => {
         });
     });
 });
+
+
+function resizeAndRestackTasks() {
+    document.querySelectorAll('.calendar-slot').forEach(slot => {
+        const tasks = Array.from(slot.querySelectorAll('.task-card'));
+        const slotHeight = slot.clientHeight;
+        const taskHeight = 42;
+        const margin = 6;
+        const overlapOffset = 12;
+
+        tasks.forEach((task, i) => {
+            const totalNeededHeight = (taskHeight + margin) * (i + 1);
+            const overlap = totalNeededHeight > slotHeight;
+
+            task.style.height = `${taskHeight}px`;
+            task.style.width = 'calc(100% - 10px)';
+            task.style.left = '5px';
+            task.style.zIndex = `${10 + i}`;
+            task.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+
+            if (overlap) {
+                task.classList.add('stacked-overlap');
+                task.style.top = `${i * overlapOffset}px`;
+                task.style.opacity = i === tasks.length - 1 ? '1' : '0.9';
+                task.style.setProperty('--i', i);
+            } else {
+                task.classList.remove('stacked-overlap');
+                task.style.top = `${i * (taskHeight + margin)}px`;
+                task.style.opacity = '1';
+            }
+        });
+    });
+}
+
