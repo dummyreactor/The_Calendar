@@ -14,25 +14,15 @@
 
         <div class="task-list" id="task-list">
             <div class="task-card" draggable="true">
-                <strong>Design Mockups</strong><br />
-                <small>Create UI samples</small>
-            </div>
-            <div class="task-card" draggable="true">
-                <strong>Team Sync</strong><br />
-                <small>Weekly team meeting</small>
-            </div>
-            <div class="task-card" draggable="true">
-                <strong>Fix Bugs</strong><br />
-                <small>Resolve reported issues</small>
-            </div>
-            <div class="task-card" draggable="true">
-                <strong>Sprint Review</strong><br />
-                <small>Showcase completed work</small>
+                <strong>Title</strong><br />
+                <small>Task description</small>
             </div>
         </div>
 
         <div id="task-input-wrapper" style="margin-top: 10px; display: none;">
             <input type="text" id="new-task-title" class="form-control form-control-sm mb-2" placeholder="Task title..." />
+            <input type="number" id="new-task-duration" class="form-control form-control-sm mb-2" placeholder="Duration (hours)" min="1" max="8" />
+
             <textarea id="new-task-desc" class="form-control form-control-sm mb-2" placeholder="Task description..." rows="2"></textarea>
             <button id="save-task-btn" class="btn btn-sm btn-primary w-100">Add</button>
         </div>
@@ -55,7 +45,6 @@
                     <input type="hidden" name="direction" value="next" />
                     <button class="btn btn-outline-secondary btn-sm" type="submit">Next →</button>
                 </form>
-
                 <button id="reset-layout-btn" class="btn btn-sm btn-outline-danger ms-2">Reset Layout</button>
 
             </div>
@@ -98,7 +87,6 @@
     </main>
 </div>
  *@
-
 @{
     ViewBag.Title = "Schedule";
     var weekDates = ViewBag.WeekDates as List<DateTime>;
@@ -115,27 +103,9 @@
 
         <div class="task-list" id="task-list">
             <div class="task-card" draggable="true">
-                <strong>Design Mockups</strong><br />
-                <small>Create UI samples</small>
+                <strong>Title</strong><br />
+                <small>Task description</small>
             </div>
-            <div class="task-card" draggable="true">
-                <strong>Team Sync</strong><br />
-                <small>Weekly team meeting</small>
-            </div>
-            <div class="task-card" draggable="true">
-                <strong>Fix Bugs</strong><br />
-                <small>Resolve reported issues</small>
-            </div>
-            <div class="task-card" draggable="true">
-                <strong>Sprint Review</strong><br />
-                <small>Showcase completed work</small>
-            </div>
-        </div>
-
-        <div id="task-input-wrapper" style="margin-top: 10px; display: none;">
-            <input type="text" id="new-task-title" class="form-control form-control-sm mb-2" placeholder="Task title..." />
-            <textarea id="new-task-desc" class="form-control form-control-sm mb-2" placeholder="Task description..." rows="2"></textarea>
-            <button id="save-task-btn" class="btn btn-sm btn-primary w-100">Add</button>
         </div>
     </aside>
 
@@ -157,7 +127,6 @@
                     <button class="btn btn-outline-secondary btn-sm" type="submit">Next →</button>
                 </form>
                 <button id="reset-layout-btn" class="btn btn-sm btn-outline-danger ms-2">Reset Layout</button>
-
             </div>
             <div>
                 <strong>@ViewBag.WeekRange</strong>
@@ -198,3 +167,23 @@
     </main>
 </div>
 
+<!-- Task Input Modal -->
+<div class="modal fade" id="taskInputModal" tabindex="-1" aria-labelledby="taskInputModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskInputModalLabel">Add Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-task-title" class="form-control form-control-sm mb-2" placeholder="Task title..." />
+                <input type="number" id="new-task-duration" class="form-control form-control-sm mb-2" placeholder="Duration (hours)" min="1" max="8" />
+                <textarea id="new-task-desc" class="form-control form-control-sm mb-2" placeholder="Task description..." rows="2"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="save-task-btn" class="btn btn-sm btn-primary">Add</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,7 +12,8 @@ body {
 }
 
 .task-panel {
-    width: 240px;
+/*    width: 240px;*/
+    width: 25vw;
     background: white;
     padding: 1rem;
     border-right: 1px solid #ddd;
@@ -26,6 +27,7 @@ body {
 
 .task-list {
     display: flex;
+    min-height: 80vh;
     flex-direction: column;
     gap: 10px;
 }
@@ -199,6 +201,8 @@ body {
 
     .calendar-slot {
         padding: 1px;
+        position: relative; /* Ensure positioning context */
+        overflow: visible; /* Allow overflow if needed */
     }
 
         .calendar-slot .task-card {
