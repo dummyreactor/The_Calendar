@@ -12,15 +12,28 @@
             <button id="add-task-btn" class="btn btn-sm btn-outline-success" title="Add Task">➕</button>
         </div>
 
-        <div class="task-list">
-            <div class="task-card" draggable="true">Design Mockups</div>
-            <div class="task-card" draggable="true">Team Sync</div>
-            <div class="task-card" draggable="true">Fix Bugs</div>
-            <div class="task-card" draggable="true">Sprint Review</div>
+        <div class="task-list" id="task-list">
+            <div class="task-card" draggable="true">
+                <strong>Design Mockups</strong><br />
+                <small>Create UI samples</small>
+            </div>
+            <div class="task-card" draggable="true">
+                <strong>Team Sync</strong><br />
+                <small>Weekly team meeting</small>
+            </div>
+            <div class="task-card" draggable="true">
+                <strong>Fix Bugs</strong><br />
+                <small>Resolve reported issues</small>
+            </div>
+            <div class="task-card" draggable="true">
+                <strong>Sprint Review</strong><br />
+                <small>Showcase completed work</small>
+            </div>
         </div>
 
         <div id="task-input-wrapper" style="margin-top: 10px; display: none;">
-            <input type="text" id="new-task-input" class="form-control form-control-sm mb-2" placeholder="Task name..." />
+            <input type="text" id="new-task-title" class="form-control form-control-sm mb-2" placeholder="Task title..." />
+            <textarea id="new-task-desc" class="form-control form-control-sm mb-2" placeholder="Task description..." rows="2"></textarea>
             <button id="save-task-btn" class="btn btn-sm btn-primary w-100">Add</button>
         </div>
     </aside>
@@ -56,7 +69,7 @@
                 <div class="day-header">
                     <div class="day-name">@weekDates[i].ToString("ddd")</div>
                     <div class="day-date">@weekDates[i].ToString("dd MMM")</div>
-                    <div class="column-resizer"></div> <!-- Only 1 per column -->
+                    <div class="column-resizer"></div>
                 </div>
             }
         </div>
@@ -69,7 +82,6 @@
                     <div class="time-label-cell">
                         @DateTime.Today.AddHours(hour).ToString("HH:mm")
                     </div>
-
                     @for (int i = 0; i < weekDates.Count; i++)
                     {
                         <div class="calendar-slot" data-day="@weekDates[i].ToString("yyyy-MM-dd")" data-hour="@hour"></div>

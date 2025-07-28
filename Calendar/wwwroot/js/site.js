@@ -2,7 +2,11 @@
     task.setAttribute('draggable', 'true');
 
     task.addEventListener('dragstart', function (e) {
-        e.dataTransfer.setData("text/plain", task.textContent.trim());
+        const title = task.querySelector('strong')?.textContent || task.textContent.trim();
+        const desc = task.querySelector('small')?.textContent || "";
+
+        const payload = JSON.stringify({ title, desc });
+        e.dataTransfer.setData("text/plain", payload);
         e.dataTransfer.setData("source", task.closest(".task-panel") ? "task-panel" : "calendar");
         task.classList.add("dragging");
     });
@@ -14,6 +18,7 @@
 
 document.querySelectorAll('.task-card').forEach(makeTaskDraggable);
 
+// Calendar Slots
 document.querySelectorAll('.calendar-slot').forEach(slot => {
     slot.addEventListener('dragover', function (e) {
         e.preventDefault();
@@ -28,7 +33,7 @@ document.querySelectorAll('.calendar-slot').forEach(slot => {
         e.preventDefault();
         slot.style.backgroundColor = "";
 
-        const taskText = e.dataTransfer.getData("text/plain");
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
         const source = e.dataTransfer.getData("source");
 
         const dragging = document.querySelector('.dragging');
@@ -36,7 +41,7 @@ document.querySelectorAll('.calendar-slot').forEach(slot => {
 
         const newTask = document.createElement('div');
         newTask.className = "task-card bg-success text-white";
-        newTask.textContent = taskText;
+        newTask.innerHTML = `<strong>${data.title}</strong><br><small>${data.desc}</small>`;
         newTask.style.padding = "5px";
         newTask.style.fontSize = "0.8rem";
         newTask.style.borderRadius = "6px";
@@ -47,6 +52,7 @@ document.querySelectorAll('.calendar-slot').forEach(slot => {
     });
 });
 
+// Task Panel
 const taskList = document.querySelector('.task-list');
 if (taskList) {
     taskList.addEventListener('dragover', function (e) {
@@ -62,20 +68,21 @@ if (taskList) {
         e.preventDefault();
         taskList.style.backgroundColor = "";
 
-        const taskText = e.dataTransfer.getData("text/plain");
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
         const source = e.dataTransfer.getData("source");
 
         const dragging = document.querySelector('.dragging');
         if (dragging && source === "calendar") dragging.remove();
 
         const restoredTask = document.createElement('div');
-        restoredTask.className = "task-card";
-        restoredTask.textContent = taskText;
+        restoredTask.className = 'task-card';
+        restoredTask.innerHTML = `<strong>${data.title}</strong><br><small>${data.desc}</small>`;
 
         makeTaskDraggable(restoredTask);
         taskList.appendChild(restoredTask);
     });
 
+    // Trash can
     const trashCan = document.getElementById('trash-can');
     if (trashCan) {
         trashCan.addEventListener('dragover', function (e) {
@@ -96,38 +103,48 @@ if (taskList) {
         });
     }
 
+    // Add new task UI
     const addTaskBtn = document.getElementById('add-task-btn');
     const taskInputWrapper = document.getElementById('task-input-wrapper');
-    const newTaskInput = document.getElementById('new-task-input');
+    const taskTitleInput = document.getElementById('new-task-title');
+    const taskDescInput = document.getElementById('new-task-desc');
     const saveTaskBtn = document.getElementById('save-task-btn');
 
     addTaskBtn.addEventListener('click', () => {
         taskInputWrapper.style.display = 'block';
-        newTaskInput.focus();
+        taskTitleInput.focus();
     });
 
     saveTaskBtn.addEventListener('click', () => {
-        const taskName = newTaskInput.value.trim();
-        if (taskName !== '') {
+        const title = taskTitleInput.value.trim();
+        const desc = taskDescInput.value.trim();
+
+        if (title !== '') {
             const taskCard = document.createElement('div');
             taskCard.className = 'task-card';
-            taskCard.textContent = taskName;
+            taskCard.innerHTML = `<strong>${title}</strong><br><small>${desc}</small>`;
 
             makeTaskDraggable(taskCard);
             taskList.appendChild(taskCard);
-            newTaskInput.value = '';
+
+            taskTitleInput.value = '';
+            taskDescInput.value = '';
             taskInputWrapper.style.display = 'none';
         }
     });
 
-    newTaskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
+    taskTitleInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') saveTaskBtn.click();
+    });
+    taskDescInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
             saveTaskBtn.click();
         }
     });
 }
 
-// Resizable Columns (Updated)
+// Resizable Columns
 document.querySelectorAll('.day-header').forEach((header, index) => {
     const resizer = document.createElement('div');
     resizer.className = 'column-resizer';
@@ -145,15 +162,13 @@ function initColumnResize(e) {
     function onMouseMove(e) {
         const deltaX = e.clientX - startX;
         let newWidth = originalWidth + deltaX;
-        newWidth = Math.max(80, Math.min(newWidth, 240)); // Clamp
+        newWidth = Math.max(80, Math.min(newWidth, 240));
 
         column.style.width = `${newWidth}px`;
 
         calendarRows.forEach(row => {
-            const slot = row.children[index + 1]; // +1 to skip time label
-            if (slot) {
-                slot.style.width = `${newWidth}px`;
-            }
+            const slot = row.children[index + 1]; // skip time label
+            if (slot) slot.style.width = `${newWidth}px`;
         });
     }
 
@@ -179,7 +194,7 @@ document.querySelectorAll('.calendar-row').forEach(row => {
 
         function onMouseMove(e) {
             const delta = e.clientY - startY;
-            const newHeight = Math.max(startHeight + delta, 24); // min height
+            const newHeight = Math.max(startHeight + delta, 24);
             row.style.minHeight = newHeight + 'px';
         }
 
