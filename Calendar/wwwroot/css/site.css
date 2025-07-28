@@ -69,19 +69,22 @@ body {
 }
 
 .day-header {
-    flex: 1;
-    text-align: center;
-    padding: 10px 4px;
-    font-weight: 500;
-    font-size: 0.85rem;
-    border-left: 1px solid #ccc;
+    /*    flex: 1;*/
+    width: 120px; /* Default starting width */
+    min-width: 80px;
+    max-width: 240px;
+    box-sizing: border-box;
+    border-right: solid 1px blue;
 }
 
+
 .day-name {
+    text-align: center;
     font-size: 0.95rem;
 }
 
 .day-date {
+    text-align: center;
     font-size: 0.75rem;
     color: #666;
 }
@@ -186,3 +189,37 @@ body {
     #trash-can.dragover {
         background-color: #cc0000;
     }
+
+
+.calendar-row {
+    position: relative;
+}
+
+.day-header,
+.calendar-slot {
+    width: 120px;
+    min-width: 80px;
+    max-width: 240px;
+    box-sizing: border-box;
+}
+
+
+.column-resizer {
+    width: 5px;
+    cursor: col-resize;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+}
+
+.row-resizer {
+    height: 5px;
+    cursor: row-resize;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+}
