@@ -47,6 +47,8 @@ body {
         background: #5c6bc0;
     }
 
+update
+
 .calendar-board {
     flex: 1;
     display: flex;
@@ -111,8 +113,6 @@ body {
     height: calc((100vh - 180px) / 6); /* Divide available height by 6 */
     position: relative;
 }
-
-
 /* Time slot cell */
 .calendar-slot {
     width: 120px;
@@ -125,20 +125,40 @@ body {
     padding: 2px;
     flex: none;
     position: relative;
+    overflow: visible; /* important for stacking effect */
 }
 
     .calendar-slot:hover {
         background-color: #e8f0fe;
     }
 
+    /* Stacked task cards inside calendar slot */
     .calendar-slot .task-card {
-        background-color: #4caf50 !important;
-        color: #fff !important;
+        background-color: #4caf50;
+        color: #fff;
         font-weight: 500;
-        cursor: default;
         font-size: 0.75rem;
         padding: 4px 6px;
+        height: 40px;
+        width: 90%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translateX(calc(var(--stack-index, 0) * 3px));
+        transition: transform 0.3s ease, z-index 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        pointer-events: auto;
+        cursor: pointer;
+        z-index: calc(10 + var(--stack-index, 0));
     }
+
+    /* On hover: fan out stack */
+    .calendar-slot:hover .task-card {
+        transform: translateX(calc(var(--stack-index, 0) * 22px));
+        z-index: calc(100 + var(--stack-index, 0));
+    }
+
 
 /* Column Resizer */
 .column-resizer {

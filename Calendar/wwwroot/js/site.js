@@ -41,7 +41,6 @@ function makeTaskDraggable(task) {
 }
 
 document.querySelectorAll('.task-card').forEach(makeTaskDraggable);
-
 // =======================
 // CALENDAR SLOTS DROP ZONES
 // =======================
@@ -72,12 +71,17 @@ document.querySelectorAll('.calendar-slot').forEach(slot => {
         const hour = parseInt(slot.dataset.hour);
 
         const currentSlot = document.querySelector(`.calendar-slot[data-day="${day}"][data-hour="${hour}"]`);
-        const existingTasks = currentSlot.querySelectorAll('.task-card');
+        const existingTasks = Array.from(currentSlot.querySelectorAll('.task-card'));
 
         let existingDurationInMinutes = 0;
+        const usedColors = new Set();
+
         existingTasks.forEach(task => {
             const taskDuration = parseFloat(task.dataset.duration) || 1;
             existingDurationInMinutes += taskDuration * 60;
+
+            const bg = task.dataset.color;
+            if (bg) usedColors.add(bg);
         });
 
         if ((existingDurationInMinutes + durationInMinutes) > 60) {
@@ -92,24 +96,85 @@ document.querySelectorAll('.calendar-slot').forEach(slot => {
             return;
         }
 
+        const allColors = ['#f44336', '#4caf50', '#2196f3', '#ff9800', '#9c27b0', '#00bcd4', '#8bc34a', '#e91e63'];
+        const availableColors = allColors.filter(c => !usedColors.has(c));
+        const chosenColor = availableColors.length > 0
+            ? availableColors[Math.floor(Math.random() * availableColors.length)]
+            : allColors[Math.floor(Math.random() * allColors.length)];
+
         const newTask = document.createElement('div');
-        newTask.className = "task-card bg-success text-white";
+        newTask.className = "task-card";
         newTask.innerHTML = `<strong>${data.title}</strong><br><small>${data.desc}</small>`;
         newTask.dataset.duration = duration;
+        newTask.dataset.color = chosenColor;
 
-        // 48px per hour = 0.8px per minute
-        //newTask.style.height = `${(48 * durationInMinutes) / 60}px`;
+        // Stack logic
+        //const index = existingTasks.length;
+        //newTask.style.backgroundColor = chosenColor;
+        //newTask.style.color = '#fff';
+        //newTask.style.position = 'absolute';
+        //newTask.style.top = `${index * 4}px`;
+        //newTask.style.left = `${index * 4}px`;
+        //newTask.style.height = '40px';
+        //newTask.style.width = '90%';
+        //newTask.style.zIndex = `${10 + index}`;
+        const stackIndex = existingTasks.length;
+        const slotHeight = currentSlot.clientHeight;
+        const taskHeight = 42; // fixed height
+        const margin = 6;
+        const totalNeededHeight = (taskHeight + margin) * (stackIndex + 1);
+
+        let overlap = false;
+        if (totalNeededHeight > slotHeight) {
+            overlap = true;
+        }
+
+        // Base styles
+        newTask.style.backgroundColor = chosenColor;
+        newTask.style.color = '#fff';
         newTask.style.position = 'absolute';
-        newTask.style.top = `${existingTasks.length * 4}px`; // stacking margin
-        newTask.style.left = '0';
-        newTask.style.right = '0';
-        newTask.style.zIndex = '1';
+        newTask.style.height = `${taskHeight}px`;
+        newTask.style.width = 'calc(100% - 10px)';
+        newTask.style.left = '5px';
+        newTask.style.zIndex = `${10 + stackIndex}`;
+
+        // Positioning
+        if (overlap) {
+            const overlapOffset = 12; // How much each card peeks
+            newTask.style.top = `${stackIndex * overlapOffset}px`;
+            newTask.style.opacity = stackIndex === existingTasks.length ? '1' : '0.9';
+        } else {
+            newTask.style.top = `${stackIndex * (taskHeight + margin)}px`;
+        }
+
+        // Hover animation
+        newTask.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+        newTask.addEventListener('mouseenter', () => {
+            newTask.style.transform = 'scale(1.05)';
+            newTask.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+        });
+        newTask.addEventListener('mouseleave', () => {
+            newTask.style.transform = 'scale(1)';
+            newTask.style.boxShadow = 'none';
+        });
+
+
+        newTask.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+        newTask.addEventListener('mouseenter', () => {
+            newTask.style.transform = 'scale(1.05)';
+            newTask.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+        });
+        newTask.addEventListener('mouseleave', () => {
+            newTask.style.transform = 'scale(1)';
+            newTask.style.boxShadow = 'none';
+        });
 
         makeTaskDraggable(newTask);
         currentSlot.appendChild(newTask);
         currentSlot.style.position = 'relative';
     });
 });
+
 
 // =======================
 // TASK PANEL DROP & CREATE
