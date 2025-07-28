@@ -48,35 +48,30 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
     background: white;
 }
-
-    /* Top Buttons */
 
     .calendar-board > .d-flex {
         flex-wrap: wrap;
     }
 
-/* Header */
-
+/* Header row with day names */
 .calendar-header {
     display: flex;
+    width: max-content;
     background: #eef1f6;
     border-bottom: 1px solid #ccc;
-    min-width: 100%;
 }
 
 .day-header {
-    /*    flex: 1;*/
-    width: 120px; /* Default starting width */
+    width: 120px;
     min-width: 80px;
     max-width: 240px;
     box-sizing: border-box;
-    border-right: solid 1px blue;
+    border-right: 1px solid #ccc;
+    position: relative;
 }
-
 
 .day-name {
     text-align: center;
@@ -100,22 +95,34 @@ body {
     flex-shrink: 0;
 }
 
+/* Grid container */
 .calendar-grid {
+    overflow-x: auto;
+    width: 100%;
     flex: 1;
 }
 
+/* Each hour row */
 .calendar-row {
     display: flex;
+    width: max-content;
     border-bottom: 1px solid #eee;
     min-height: 48px;
+    position: relative;
 }
 
+/* Time slot cell */
 .calendar-slot {
-    flex: 1;
+    width: 120px;
+    min-width: 80px;
+    max-width: 240px;
+    box-sizing: border-box;
     border-left: 1px solid #eee;
     background-color: #ffffff;
     transition: background-color 0.2s;
     padding: 2px;
+    flex: none;
+    position: relative;
 }
 
     .calendar-slot:hover {
@@ -131,8 +138,55 @@ body {
         padding: 4px 6px;
     }
 
-/* --- Responsive: Compress columns on small screens --- */
+/* Column Resizer */
+.column-resizer {
+    width: 6px;
+    cursor: col-resize;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.1);
+}
 
+/* Row Resizer (if needed) */
+.row-resizer {
+    height: 5px;
+    cursor: row-resize;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Trash icon */
+#trash-can {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff4444;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    line-height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+
+    #trash-can.dragover {
+        background-color: #cc0000;
+    }
+
+/* Responsive Tweaks */
 @media (max-width: 768px) {
     .task-panel {
         display: none;
@@ -165,61 +219,4 @@ body {
         font-size: 0.65rem;
         padding: 4px 5px;
     }
-}
-
-#trash-can {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: #ff4444;
-    color: white;
-    font-size: 24px;
-    text-align: center;
-    line-height: 60px;
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 9999;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s ease;
-}
-
-    #trash-can.dragover {
-        background-color: #cc0000;
-    }
-
-
-.calendar-row {
-    position: relative;
-}
-
-.day-header,
-.calendar-slot {
-    width: 120px;
-    min-width: 80px;
-    max-width: 240px;
-    box-sizing: border-box;
-}
-
-
-.column-resizer {
-    width: 5px;
-    cursor: col-resize;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 2;
-}
-
-.row-resizer {
-    height: 5px;
-    cursor: row-resize;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: 2;
 }

@@ -144,44 +144,48 @@ if (taskList) {
     });
 }
 
-// Resizable Columns
+// =======================
+// COLUMN RESIZER (DAY HEADERS)
+// =======================
 document.querySelectorAll('.day-header').forEach((header, index) => {
     const resizer = document.createElement('div');
     resizer.className = 'column-resizer';
-    resizer.addEventListener('mousedown', initColumnResize);
     header.appendChild(resizer);
+
+    resizer.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        const startX = e.clientX;
+        const startWidth = header.offsetWidth;
+        const columnIndex = index;
+
+        const calendarRows = document.querySelectorAll('.calendar-row');
+
+        function onMouseMove(e) {
+            const delta = e.clientX - startX;
+            let newWidth = Math.max(80, Math.min(startWidth + delta, 240));
+            header.style.width = `${newWidth}px`;
+
+            calendarRows.forEach(row => {
+                const slot = row.children[columnIndex + 1]; // +1 skips time label
+                if (slot) {
+                    slot.style.width = `${newWidth}px`;
+                }
+            });
+        }
+
+        function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
 });
 
-function initColumnResize(e) {
-    const startX = e.clientX;
-    const column = e.target.parentElement;
-    const index = Array.from(column.parentElement.children).indexOf(column);
-    const calendarRows = document.querySelectorAll('.calendar-row');
-    const originalWidth = column.offsetWidth;
-
-    function onMouseMove(e) {
-        const deltaX = e.clientX - startX;
-        let newWidth = originalWidth + deltaX;
-        newWidth = Math.max(80, Math.min(newWidth, 240));
-
-        column.style.width = `${newWidth}px`;
-
-        calendarRows.forEach(row => {
-            const slot = row.children[index + 1]; // skip time label
-            if (slot) slot.style.width = `${newWidth}px`;
-        });
-    }
-
-    function onMouseUp() {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-    }
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-}
-
-// Resizable Rows
+// =======================
+// ROW RESIZER (TIME ROWS)
+// =======================
 document.querySelectorAll('.calendar-row').forEach(row => {
     const resizer = document.createElement('div');
     resizer.className = 'row-resizer';
@@ -205,5 +209,25 @@ document.querySelectorAll('.calendar-row').forEach(row => {
 
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
+    });
+});
+
+document.getElementById('reset-layout-btn')?.addEventListener('click', () => {
+    // Reset all day headers and their matching calendar slots
+    const headers = document.querySelectorAll('.day-header');
+    const rows = document.querySelectorAll('.calendar-row');
+
+    headers.forEach((header, index) => {
+        header.style.width = '120px';
+
+        rows.forEach(row => {
+            const slot = row.children[index + 1]; // +1 skips the time-label-cell
+            if (slot) slot.style.width = '120px';
+        });
+    });
+
+    // Reset all row heights
+    rows.forEach(row => {
+        row.style.minHeight = '48px';
     });
 });
