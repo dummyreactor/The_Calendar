@@ -1,0 +1,189 @@
+﻿@{
+    ViewBag.Title = "Schedule";
+    var weekDates = ViewBag.WeekDates as List<DateTime>;
+    var hours = Enumerable.Range(0, 24).ToList(); // 24-hour format: 00:00–23:00
+}
+
+<div class="calendar-wrapper">
+    <!-- Sidebar for Tasks -->
+    <aside class="task-panel">
+        <h3>📌 Tasks</h3>
+        <div class="task-list">
+            <div class="task-card" draggable="true">Design Mockups</div>
+            <div class="task-card" draggable="true">Team Sync</div>
+            <div class="task-card" draggable="true">Fix Bugs</div>
+            <div class="task-card" draggable="true">Sprint Review</div>
+        </div>
+    </aside>
+
+    <!-- Calendar Section -->
+    <main class="calendar-board">
+
+        <div class="d-flex justify-content-between align-items-center px-3 py-2 bg-white border-bottom">
+            <div>
+                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline">
+                    <input type="hidden" name="direction" value="prev" />
+                    <button class="btn btn-outline-secondary btn-sm" type="submit">← Previous</button>
+                </form>
+                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline mx-2">
+                    <input type="hidden" name="direction" value="today" />
+                    <button class="btn btn-outline-primary btn-sm" type="submit">Today</button>
+                </form>
+                <form method="get" asp-controller="Home" asp-action="Index" class="d-inline">
+                    <input type="hidden" name="direction" value="next" />
+                    <button class="btn btn-outline-secondary btn-sm" type="submit">Next →</button>
+                </form>
+            </div>
+            <div>
+                <strong>@ViewBag.WeekRange</strong>
+            </div>
+        </div>
+
+        <!-- Header with Week Dates -->
+        <div class="calendar-header">
+            <div class="time-label-cell">Time</div>
+            @foreach (var day in weekDates)
+            {
+                <div class="day-header">
+                    <div class="day-name">@day.ToString("ddd")</div>
+                    <div class="day-date">@day.ToString("dd MMM")</div>
+                </div>
+            }
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-grid">
+            @foreach (var hour in hours)
+            {
+                <div class="calendar-row">
+                    <div class="time-label-cell">
+                        @DateTime.Today.AddHours(hour).ToString("HH:mm")
+                    </div>
+
+                    @foreach (var day in weekDates)
+                    {
+                        <div class="calendar-slot" data-day="@day.ToShortDateString()" data-hour="@hour">
+                            <!-- Drag drop target -->
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </main>
+</div>
+@* 
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f4f7fa;
+    }
+
+    .calendar-wrapper {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .task-panel {
+        width: 280px;
+        background: #ffffff;
+        padding: 1.5rem;
+        border-right: 1px solid #ddd;
+        overflow-y: auto;
+    }
+
+        .task-panel h3 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+    .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .task-card {
+        background: #3f51b5;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        cursor: grab;
+        transition: transform 0.2s ease;
+    }
+
+        .task-card:hover {
+            transform: scale(1.03);
+            background: #5c6bc0;
+        }
+
+    .calendar-board {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-x: auto;
+    }
+
+    .calendar-header {
+        display: flex;
+        background: #eef1f6;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .day-header {
+        flex: 1;
+        padding: 12px 0;
+        text-align: center;
+        font-weight: 500;
+        border-left: 1px solid #ccc;
+    }
+
+    .day-name {
+        font-size: 1rem;
+    }
+
+    .day-date {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .time-label-cell {
+        width: 80px;
+        text-align: right;
+        padding: 10px;
+        font-size: 0.85rem;
+        color: #666;
+        background: #f9f9f9;
+        border-right: 1px solid #ddd;
+    }
+
+    .calendar-grid {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .calendar-row {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        min-height: 60px;
+    }
+
+    .calendar-slot {
+        flex: 1;
+        border-left: 1px solid #eee;
+        background-color: #ffffff;
+        transition: background-color 0.2s;
+    }
+
+        .calendar-slot:hover {
+            background-color: #e8f0fe;
+        }
+
+        .calendar-slot .task-card {
+            background-color: #4caf50 !important;
+            color: #fff !important;
+            font-weight: 500;
+            cursor: default;
+        }
+</style> *@

@@ -1,0 +1,32 @@
+# Ignore build results
+**/bin/
+**/obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore Rider / VS Code settings
+.idea/
+.vscode/
+
+# Ignore VS settings folder
+.vs/
+
+# Ignore NuGet packages
+*.nupkg
+packages/
+
+# Ignore logs
+*.log
+
+# Ignore temp files
+*.tmp
+*.temp
+
+# Ignore compiled DLLs
+*.dll
+*.pdb
+*.exe
